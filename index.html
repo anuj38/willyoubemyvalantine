@@ -18,10 +18,11 @@ body{
     overflow:hidden;
     text-align:center;
     color:white;
+    padding:20px;
 }
 
 .container{
-    width:90%;
+    width:100%;
     max-width:500px;
 }
 
@@ -54,7 +55,6 @@ button{
 
 #yesBtn:hover{
     background:#163a5a;
-    transform:scale(1.05);
 }
 
 #noBtn{
@@ -72,29 +72,30 @@ button{
     height:100%;
     display:none;
     pointer-events:none;
-    font-size:40px;
-    animation:fadeOut 3s forwards;
-}
-
-@keyframes fadeOut{
-    0%{opacity:1}
-    100%{opacity:0}
 }
 
 .popper{
     position:absolute;
+    font-size:30px;
     animation:pop 3s ease-out forwards;
 }
 
 @keyframes pop{
-    0%{transform:translateY(-50px) scale(0.5);opacity:0}
+    0%{transform:translateY(-50px);opacity:0}
     50%{opacity:1}
-    100%{transform:translateY(100vh) scale(1.2);opacity:0}
+    100%{transform:translateY(100vh);opacity:0}
+}
+
+/* Message after YES */
+.afterYesMessage{
+    margin-top:20px;
+    font-size:18px;
+    display:none;
 }
 
 /* Envelope */
 .envelope{
-    margin-top:30px;
+    margin-top:20px;
     width:100%;
     height:200px;
     background:#1e4d7a;
@@ -157,6 +158,11 @@ button{
         <button id="noBtn">No</button>
     </div>
 
+    <div class="afterYesMessage" id="afterYesMessage">
+        You made the right choice… and I promise you won’t regret it.<br>
+        Now, open the letter.
+    </div>
+
     <div class="envelope" id="envelope">
         <div class="flap"></div>
         <div class="letter">
@@ -181,8 +187,9 @@ const noBtn=document.getElementById("noBtn");
 const envelope=document.getElementById("envelope");
 const celebration=document.getElementById("celebration");
 const btnGroup=document.getElementById("btnGroup");
+const afterYesMessage=document.getElementById("afterYesMessage");
 
-// Dramatic NO movement
+// Dramatic NO movement (size stays same)
 noBtn.addEventListener("mouseover",function(){
     const maxX=window.innerWidth-noBtn.offsetWidth;
     const maxY=window.innerHeight-noBtn.offsetHeight;
@@ -191,15 +198,16 @@ noBtn.addEventListener("mouseover",function(){
     noBtn.style.position="fixed";
     noBtn.style.left=randomX+"px";
     noBtn.style.top=randomY+"px";
-    noBtn.style.transform="scale(1.2) rotate("+(Math.random()*360)+"deg)";
 });
 
 // YES click
 yesBtn.addEventListener("click",function(){
-    btnGroup.style.display="none"; // remove both buttons
+    btnGroup.style.display="none";
     showPoppers();
+
     setTimeout(()=>{
         celebration.style.display="none";
+        afterYesMessage.style.display="block";
         envelope.style.display="block";
     },3000);
 });
@@ -211,7 +219,7 @@ envelope.addEventListener("click",function(){
 
 function showPoppers(){
     celebration.style.display="block";
-    for(let i=0;i<15;i++){
+    for(let i=0;i<12;i++){
         const pop=document.createElement("div");
         pop.classList.add("popper");
         pop.innerHTML="🎉";
