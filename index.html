@@ -13,7 +13,7 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    background:#1e4d7a; /* Simple blue before YES */
+    background:#1e4d7a;
     font-family:'Libre Baskerville',serif;
     overflow:hidden;
     text-align:center;
@@ -21,20 +21,21 @@ body{
     padding:20px;
 }
 
-/* Blue Hearts (activated after YES) */
+/* Blue Hearts (after YES) */
 .heart{
     position:fixed;
     color:#4fc3f7;
     font-size:20px;
-    animation:float 8s linear infinite;
-    opacity:0.8;
+    animation:float 7s linear forwards;
+    opacity:0.85;
     z-index:0;
+    pointer-events:none;
 }
 
 @keyframes float{
-    0%{transform:translateY(110vh);opacity:0}
-    20%{opacity:0.8}
-    100%{transform:translateY(-10vh);opacity:0}
+    0%{transform:translateY(110vh) scale(0.8);opacity:0}
+    15%{opacity:0.85}
+    100%{transform:translateY(-15vh) scale(1.1);opacity:0}
 }
 
 .container{width:100%;max-width:500px;position:relative;z-index:2}
@@ -154,7 +155,10 @@ const afterYesMessage=document.getElementById("afterYesMessage");
 const question=document.getElementById("question");
 const finalMessage=document.getElementById("finalMessage");
 
-// Smooth escape (same size)
+let heartsStarted=false;
+let heartInterval=null;
+
+// Smooth escape without resizing
 function moveNoButton(x,y){
     const rect=noBtn.getBoundingClientRect();
     const centerX=rect.left+rect.width/2;
@@ -184,31 +188,32 @@ window.addEventListener("touchmove",e=>{
     moveNoButton(t.clientX,t.clientY);
 },{passive:true});
 
-// AFTER YES → start blue hearts loop
+// AFTER YES → clean heart loop
 yesBtn.addEventListener("click",function(){
     btnGroup.style.display="none";
     question.style.display="none";
 
-    startHeartsLoop();
+    if(!heartsStarted){
+        startHeartsLoop();
+        heartsStarted=true;
+    }
 
     afterYesMessage.style.display="block";
     envelope.style.display="block";
 });
 
 function startHeartsLoop(){
-    setInterval(()=>{
-        for(let i=0;i<6;i++){
-            const heart=document.createElement('div');
-            heart.className='heart';
-            heart.innerHTML='💙';
-            heart.style.left=Math.random()*100+'vw';
-            document.body.appendChild(heart);
+    heartInterval=setInterval(()=>{
+        const heart=document.createElement('div');
+        heart.className='heart';
+        heart.innerHTML='💙';
+        heart.style.left=Math.random()*100+'vw';
+        document.body.appendChild(heart);
 
-            setTimeout(()=>{
-                heart.remove();
-            },8000);
-        }
-    },1000);
+        setTimeout(()=>{
+            heart.remove();
+        },7000);
+    },300);
 }
 
 envelope.addEventListener("click",function(){
