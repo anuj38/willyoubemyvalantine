@@ -21,7 +21,7 @@ body{
     padding:20px;
 }
 
-/* Enhanced Floating Blue Hearts */
+/* Floating Blue Hearts */
 .heart{
     position:fixed;
     color:#4fc3f7;
@@ -46,8 +46,7 @@ h1{font-size:24px;margin-bottom:40px}
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:40px; /* distance between buttons */
-    position:relative;
+    gap:40px;
 }
 
 button{
@@ -58,13 +57,13 @@ button{
     cursor:pointer;
     transition:0.25s ease;
     font-family:'Libre Baskerville',serif;
-    min-width:120px; /* equal size */
+    min-width:120px;
 }
 
 #yesBtn{background:#1e4d7a;color:white}
 #noBtn{background:#888;color:white}
 
-/* Celebration */
+/* GRAND CELEBRATION */
 .celebration{
     position:fixed;
     top:0;left:0;
@@ -74,28 +73,41 @@ button{
     z-index:1;
 }
 
-.popper{
+.firework{
     position:absolute;
-    font-size:32px;
-    animation:burst 3s ease-out forwards;
+    font-size:34px;
+    animation:explode 2.5s ease-out forwards;
 }
 
-@keyframes burst{
-    0%{transform:scale(0.3) translateY(0);opacity:0}
+@keyframes explode{
+    0%{transform:scale(0.2);opacity:0}
     30%{opacity:1}
-    100%{transform:scale(1.3) translateY(100vh);opacity:0}
+    100%{transform:scale(1.8);opacity:0}
+}
+
+.spark{
+    position:absolute;
+    width:6px;height:6px;
+    background:#4fc3f7;
+    border-radius:50%;
+    animation:sparkle 2s linear forwards;
+}
+
+@keyframes sparkle{
+    0%{transform:translate(0,0);opacity:1}
+    100%{transform:translate(var(--x),var(--y));opacity:0}
 }
 
 .lights{
     position:fixed;
     top:0;width:100%;
     display:none;
-    font-size:22px;
-    animation:blink 0.7s infinite alternate;
+    font-size:24px;
+    animation:blink 0.6s infinite alternate;
     z-index:1;
 }
 
-@keyframes blink{from{opacity:0.3}to{opacity:1}}
+@keyframes blink{from{opacity:0.4}to{opacity:1}}
 
 .afterYesMessage{margin-top:25px;font-size:18px;display:none}
 
@@ -149,17 +161,12 @@ button{
     display:none;
 }
 
-@media(max-width:600px){
-    h1{font-size:20px}
-    button{font-size:15px;padding:12px 22px}
-    .buttons{gap:30px}
-}
+@media(max-width:600px){h1{font-size:20px}}
 </style>
 </head>
 <body>
 
 <script>
-// More floating hearts
 for(let i=0;i<60;i++){
     const heart=document.createElement('div');
     heart.className='heart';
@@ -195,7 +202,7 @@ for(let i=0;i<60;i++){
     </div>
 
     <div class="finalMessage" id="finalMessage">
-        Toh Phir, Daal Baati khaane Chale? 😉
+        Toh Phir, Daal Baati khaane Chale?
     </div>
 </div>
 
@@ -213,32 +220,23 @@ const question=document.getElementById("question");
 const finalMessage=document.getElementById("finalMessage");
 const lights=document.getElementById("lights");
 
+// Escape logic remains same
 function moveNoButton(x,y){
     const rect = noBtn.getBoundingClientRect();
-
     const centerX = rect.left + rect.width/2;
     const centerY = rect.top + rect.height/2;
-
     const dx = centerX - x;
     const dy = centerY - y;
     const distance = Math.sqrt(dx*dx + dy*dy);
 
-    const triggerDistance = 110; // how close finger/mouse gets
-    const moveDistance = 120;    // how far button escapes
-
-    if(distance < triggerDistance && distance > 0){
-        const moveX = (dx / distance) * moveDistance;
-        const moveY = (dy / distance) * moveDistance;
-
+    if(distance < 110 && distance > 0){
+        const moveX = (dx / distance) * 120;
+        const moveY = (dy / distance) * 120;
         let newLeft = rect.left + moveX;
         let newTop  = rect.top  + moveY;
 
-        // Keep button inside screen boundaries
-        const maxLeft = window.innerWidth - rect.width;
-        const maxTop  = window.innerHeight - rect.height;
-
-        newLeft = Math.max(0, Math.min(newLeft, maxLeft));
-        newTop  = Math.max(0, Math.min(newTop, maxTop));
+        newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - rect.width));
+        newTop  = Math.max(0, Math.min(newTop, window.innerHeight - rect.height));
 
         noBtn.style.position = "fixed";
         noBtn.style.left = newLeft + "px";
@@ -246,25 +244,39 @@ function moveNoButton(x,y){
     }
 }
 
-// Smooth mobile + desktop interaction
-window.addEventListener("touchmove",(e)=>{
-    const touch=e.touches[0];
-    moveNoButton(touch.clientX,touch.clientY);
+window.addEventListener("mousemove",e=>moveNoButton(e.clientX,e.clientY));
+window.addEventListener("touchmove",e=>{
+    const t=e.touches[0];
+    moveNoButton(t.clientX,t.clientY);
 },{passive:true});
 
-window.addEventListener("mousemove",(e)=>{
-    moveNoButton(e.clientX,e.clientY);
-});
-
-
+// GRAND celebration on YES
 yesBtn.addEventListener("click",function(){
     btnGroup.style.display="none";
     question.style.display="none";
     lights.style.display="block";
-    showPoppers();
+    celebration.style.display="block";
+
+    for(let i=0;i<8;i++){
+        const fw=document.createElement("div");
+        fw.className="firework";
+        fw.innerHTML="🎆";
+        fw.style.left=Math.random()*100+"vw";
+        fw.style.top=Math.random()*60+"vh";
+        celebration.appendChild(fw);
+    }
+
+    for(let i=0;i<60;i++){
+        const spark=document.createElement("div");
+        spark.className="spark";
+        spark.style.left="50vw";
+        spark.style.top="40vh";
+        spark.style.setProperty('--x',(Math.random()*400-200)+"px");
+        spark.style.setProperty('--y',(Math.random()*400-200)+"px");
+        celebration.appendChild(spark);
+    }
 
     setTimeout(()=>{
-        celebration.style.display="none";
         afterYesMessage.style.display="block";
         envelope.style.display="block";
     },3000);
@@ -276,18 +288,6 @@ envelope.addEventListener("click",function(){
         finalMessage.style.display="block";
     },3000);
 });
-
-function showPoppers(){
-    celebration.style.display="block";
-    for(let i=0;i<40;i++){
-        const pop=document.createElement("div");
-        pop.classList.add("popper");
-        pop.innerHTML="🎉";
-        pop.style.left=Math.random()*100+"vw";
-        pop.style.top=Math.random()*40+"vh";
-        celebration.appendChild(pop);
-    }
-}
 </script>
 
 </body>
