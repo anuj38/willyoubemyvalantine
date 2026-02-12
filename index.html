@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Ritika ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #1a1a1a, #2b2b2b);
+        font-family: 'Poppins', sans-serif;
+        overflow: hidden;
+        color: white;
+        text-align: center;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 50px 40px;
+        border-radius: 20px;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 0 40px rgba(255, 0, 90, 0.3);
+        position: relative;
+        width: 90%;
+        max-width: 500px;
+    }
+
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 32px;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+    }
+
+    p {
+        font-size: 16px;
+        opacity: 0.9;
+        margin-bottom: 30px;
+    }
+
+    .buttons {
+        position: relative;
+        height: 60px;
+    }
+
+    button {
+        padding: 12px 30px;
+        font-size: 16px;
+        border-radius: 30px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: absolute;
+    }
+
+    #yesBtn {
+        background: #ff2e63;
+        color: white;
+        left: 30%;
+    }
+
+    #yesBtn:hover {
+        background: #ff004c;
+        transform: scale(1.05);
+    }
+
+    #noBtn {
+        background: #888;
+        color: white;
+        left: 60%;
+    }
+
+    .success {
+        font-size: 20px;
+        margin-top: 20px;
+        color: #ff2e63;
+        display: none;
+    }
+
+</style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Ritika...</h1>
+    <p>
+        In every filmy love story, there comes a moment 
+        where the hero gathers courage and asks the most important question...
+    </p>
+    <h2 style="font-family: 'Playfair Display', serif; font-weight: 500;">
+        Will you be my Valentine? ❤️
+    </h2>
+
+    <div class="buttons">
+        <button id="yesBtn">Yes 💖</button>
+        <button id="noBtn">No 🙈</button>
+    </div>
+
+    <div class="success" id="successMessage">
+        I knew it... Even destiny ships us together ✨❤️
+    </div>
+</div>
+
+<script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const successMessage = document.getElementById("successMessage");
+
+    noBtn.addEventListener("mouseover", function() {
+        const card = document.querySelector('.card');
+        const cardRect = card.getBoundingClientRect();
+
+        const maxX = cardRect.width - noBtn.offsetWidth - 20;
+        const maxY = 40;
+
+        const randomX = Math.random() * maxX;
+        const randomY = Math.random() * maxY;
+
+        noBtn.style.left = randomX + "px";
+        noBtn.style.top = randomY + "px";
+    });
+
+    yesBtn.addEventListener("click", function() {
+        successMessage.style.display = "block";
+    });
+</script>
+
+</body>
+</html>
