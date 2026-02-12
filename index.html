@@ -21,41 +21,48 @@ body{
     padding:20px;
 }
 
-/* More Floating blue hearts */
+/* Enhanced Floating Blue Hearts */
 .heart{
     position:fixed;
     color:#4fc3f7;
-    font-size:16px;
-    animation:float 10s linear infinite;
-    opacity:0.7;
+    font-size:18px;
+    animation:float 12s linear infinite;
+    opacity:0.75;
     z-index:0;
 }
 
 @keyframes float{
     0%{transform:translateY(110vh) scale(0.8);opacity:0}
-    20%{opacity:0.7}
-    100%{transform:translateY(-10vh) scale(1.1);opacity:0}
+    20%{opacity:0.75}
+    50%{transform:translateY(50vh) translateX(20px)}
+    100%{transform:translateY(-10vh) translateX(-20px);opacity:0}
 }
 
 .container{width:100%;max-width:500px;position:relative;z-index:2}
 
-h1{font-size:26px;margin-bottom:30px}
+h1{font-size:24px;margin-bottom:40px}
 
-.buttons{position:relative;height:70px}
+.buttons{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:40px; /* distance between buttons */
+    position:relative;
+}
 
 button{
-    padding:12px 28px;
+    padding:14px 30px;
     font-size:16px;
     border:none;
     border-radius:30px;
     cursor:pointer;
-    position:absolute;
     transition:0.25s ease;
     font-family:'Libre Baskerville',serif;
+    min-width:120px; /* equal size */
 }
 
-#yesBtn{background:#1e4d7a;color:white;left:20%}
-#noBtn{background:#888;color:white;right:20%}
+#yesBtn{background:#1e4d7a;color:white}
+#noBtn{background:#888;color:white}
 
 /* Celebration */
 .celebration{
@@ -90,10 +97,10 @@ button{
 
 @keyframes blink{from{opacity:0.3}to{opacity:1}}
 
-.afterYesMessage{margin-top:20px;font-size:18px;display:none}
+.afterYesMessage{margin-top:25px;font-size:18px;display:none}
 
 .envelope{
-    margin-top:20px;
+    margin-top:25px;
     width:100%;
     height:200px;
     background:#1e4d7a;
@@ -102,10 +109,7 @@ button{
     cursor:pointer;
     display:none;
     box-shadow:0 20px 40px rgba(0,0,0,0.4);
-    transition:transform 0.6s ease;
 }
-
-.envelope:hover{transform:scale(1.03)}
 
 .flap{
     position:absolute;
@@ -119,7 +123,7 @@ button{
 .letter{
     position:absolute;
     bottom:0;left:50%;
-    transform:translateX(-50%) translateY(100%) scale(0.7);
+    transform:translateX(-50%) translateY(100%) scale(0.8);
     width:90%;
     background:white;
     color:#0f2027;
@@ -140,30 +144,35 @@ button{
 }
 
 .finalMessage{
-    margin-top:40px; /* more distance */
+    margin-top:45px;
     font-size:17px;
     display:none;
 }
 
-@media(max-width:600px){h1{font-size:22px}}
+@media(max-width:600px){
+    h1{font-size:20px}
+    button{font-size:15px;padding:12px 22px}
+    .buttons{gap:30px}
+}
 </style>
 </head>
 <body>
 
-<!-- More Floating Hearts -->
 <script>
-for(let i=0;i<45;i++){
+// More floating hearts
+for(let i=0;i<60;i++){
     const heart=document.createElement('div');
     heart.className='heart';
     heart.innerHTML='💙';
     heart.style.left=Math.random()*100+'vw';
-    heart.style.animationDuration=(6+Math.random()*6)+'s';
+    heart.style.animationDuration=(8+Math.random()*6)+'s';
     document.body.appendChild(heart);
 }
 </script>
 
 <div class="container">
     <h1 id="question">Ritika, will you be my Valentine? 💙</h1>
+
     <div class="buttons" id="btnGroup">
         <button id="yesBtn">Yes 😊</button>
         <button id="noBtn">No 😢</button>
@@ -205,8 +214,8 @@ const finalMessage=document.getElementById("finalMessage");
 const lights=document.getElementById("lights");
 
 function moveNoButton(x,y){
-    const distance=120;
     const rect=noBtn.getBoundingClientRect();
+    const distance=100;
     const centerX=rect.left+rect.width/2;
     const centerY=rect.top+rect.height/2;
 
@@ -214,24 +223,23 @@ function moveNoButton(x,y){
     const dy=centerY-y;
     const length=Math.sqrt(dx*dx+dy*dy);
 
-    if(length<120){
+    if(length<120 && length>0){
         const moveX=(dx/length)*distance;
         const moveY=(dy/length)*distance;
         noBtn.style.position="fixed";
-        noBtn.style.left=centerX+moveX-rect.width/2+"px";
-        noBtn.style.top=centerY+moveY-rect.height/2+"px";
+        noBtn.style.left=(centerX+moveX-rect.width/2)+"px";
+        noBtn.style.top=(centerY+moveY-rect.height/2)+"px";
     }
 }
 
-// Desktop hover
-window.addEventListener("mousemove",(e)=>{
-    moveNoButton(e.clientX,e.clientY);
-});
-
-// Mobile touch
-window.addEventListener("touchstart",(e)=>{
+// Smooth mobile + desktop interaction
+window.addEventListener("touchmove",(e)=>{
     const touch=e.touches[0];
     moveNoButton(touch.clientX,touch.clientY);
+},{passive:true});
+
+window.addEventListener("mousemove",(e)=>{
+    moveNoButton(e.clientX,e.clientY);
 });
 
 
@@ -252,12 +260,12 @@ envelope.addEventListener("click",function(){
     envelope.classList.add("open");
     setTimeout(()=>{
         finalMessage.style.display="block";
-    },3000); // 3 seconds
+    },3000);
 });
 
 function showPoppers(){
     celebration.style.display="block";
-    for(let i=0;i<35;i++){
+    for(let i=0;i<40;i++){
         const pop=document.createElement("div");
         pop.classList.add("popper");
         pop.innerHTML="🎉";
