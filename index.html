@@ -214,21 +214,35 @@ const finalMessage=document.getElementById("finalMessage");
 const lights=document.getElementById("lights");
 
 function moveNoButton(x,y){
-    const rect=noBtn.getBoundingClientRect();
-    const distance=100;
-    const centerX=rect.left+rect.width/2;
-    const centerY=rect.top+rect.height/2;
+    const rect = noBtn.getBoundingClientRect();
 
-    const dx=centerX-x;
-    const dy=centerY-y;
-    const length=Math.sqrt(dx*dx+dy*dy);
+    const centerX = rect.left + rect.width/2;
+    const centerY = rect.top + rect.height/2;
 
-    if(length<120 && length>0){
-        const moveX=(dx/length)*distance;
-        const moveY=(dy/length)*distance;
-        noBtn.style.position="fixed";
-        noBtn.style.left=(centerX+moveX-rect.width/2)+"px";
-        noBtn.style.top=(centerY+moveY-rect.height/2)+"px";
+    const dx = centerX - x;
+    const dy = centerY - y;
+    const distance = Math.sqrt(dx*dx + dy*dy);
+
+    const triggerDistance = 110; // how close finger/mouse gets
+    const moveDistance = 120;    // how far button escapes
+
+    if(distance < triggerDistance && distance > 0){
+        const moveX = (dx / distance) * moveDistance;
+        const moveY = (dy / distance) * moveDistance;
+
+        let newLeft = rect.left + moveX;
+        let newTop  = rect.top  + moveY;
+
+        // Keep button inside screen boundaries
+        const maxLeft = window.innerWidth - rect.width;
+        const maxTop  = window.innerHeight - rect.height;
+
+        newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+        newTop  = Math.max(0, Math.min(newTop, maxTop));
+
+        noBtn.style.position = "fixed";
+        noBtn.style.left = newLeft + "px";
+        noBtn.style.top  = newTop  + "px";
     }
 }
 
