@@ -21,19 +21,20 @@ body{
     padding:20px;
 }
 
-/* Floating blue hearts */
+/* More Floating blue hearts */
 .heart{
     position:fixed;
     color:#4fc3f7;
-    font-size:14px;
-    animation:float 8s linear infinite;
-    opacity:0.6;
+    font-size:16px;
+    animation:float 10s linear infinite;
+    opacity:0.7;
+    z-index:0;
 }
 
 @keyframes float{
-    0%{transform:translateY(100vh);opacity:0}
-    20%{opacity:0.6}
-    100%{transform:translateY(-10vh);opacity:0}
+    0%{transform:translateY(110vh) scale(0.8);opacity:0}
+    20%{opacity:0.7}
+    100%{transform:translateY(-10vh) scale(1.1);opacity:0}
 }
 
 .container{width:100%;max-width:500px;position:relative;z-index:2}
@@ -49,7 +50,7 @@ button{
     border-radius:30px;
     cursor:pointer;
     position:absolute;
-    transition:0.2s linear;
+    transition:0.25s ease;
     font-family:'Libre Baskerville',serif;
 }
 
@@ -68,22 +69,22 @@ button{
 
 .popper{
     position:absolute;
-    font-size:30px;
+    font-size:32px;
     animation:burst 3s ease-out forwards;
 }
 
 @keyframes burst{
     0%{transform:scale(0.3) translateY(0);opacity:0}
     30%{opacity:1}
-    100%{transform:scale(1.2) translateY(100vh);opacity:0}
+    100%{transform:scale(1.3) translateY(100vh);opacity:0}
 }
 
 .lights{
     position:fixed;
     top:0;width:100%;
     display:none;
-    font-size:20px;
-    animation:blink 0.8s infinite alternate;
+    font-size:22px;
+    animation:blink 0.7s infinite alternate;
     z-index:1;
 }
 
@@ -118,7 +119,7 @@ button{
 .letter{
     position:absolute;
     bottom:0;left:50%;
-    transform:translateX(-50%) translateY(100%) scale(0.8);
+    transform:translateX(-50%) translateY(100%) scale(0.7);
     width:90%;
     background:white;
     color:#0f2027;
@@ -128,19 +129,19 @@ button{
     font-size:17px;
     line-height:1.6;
     opacity:0;
-    transition:all 0.8s cubic-bezier(.68,-0.55,.27,1.55);
+    transition:all 0.9s cubic-bezier(.68,-0.55,.27,1.55);
 }
 
 .envelope.open .flap{transform:rotateX(180deg)}
 
 .envelope.open .letter{
-    transform:translateX(-50%) translateY(-30%) scale(1);
+    transform:translateX(-50%) translateY(-35%) scale(1);
     opacity:1;
 }
 
 .finalMessage{
-    margin-top:15px;
-    font-size:16px;
+    margin-top:40px; /* more distance */
+    font-size:17px;
     display:none;
 }
 
@@ -149,14 +150,14 @@ button{
 </head>
 <body>
 
-<!-- Floating Hearts -->
+<!-- More Floating Hearts -->
 <script>
-for(let i=0;i<25;i++){
+for(let i=0;i<45;i++){
     const heart=document.createElement('div');
     heart.className='heart';
     heart.innerHTML='💙';
     heart.style.left=Math.random()*100+'vw';
-    heart.style.animationDuration=(5+Math.random()*5)+'s';
+    heart.style.animationDuration=(6+Math.random()*6)+'s';
     document.body.appendChild(heart);
 }
 </script>
@@ -203,13 +204,36 @@ const question=document.getElementById("question");
 const finalMessage=document.getElementById("finalMessage");
 const lights=document.getElementById("lights");
 
-noBtn.addEventListener("mouseover",function(){
-    const maxX=window.innerWidth-noBtn.offsetWidth;
-    const maxY=window.innerHeight-noBtn.offsetHeight;
-    noBtn.style.position="fixed";
-    noBtn.style.left=Math.random()*maxX+"px";
-    noBtn.style.top=Math.random()*maxY+"px";
+function moveNoButton(x,y){
+    const distance=120;
+    const rect=noBtn.getBoundingClientRect();
+    const centerX=rect.left+rect.width/2;
+    const centerY=rect.top+rect.height/2;
+
+    const dx=centerX-x;
+    const dy=centerY-y;
+    const length=Math.sqrt(dx*dx+dy*dy);
+
+    if(length<120){
+        const moveX=(dx/length)*distance;
+        const moveY=(dy/length)*distance;
+        noBtn.style.position="fixed";
+        noBtn.style.left=centerX+moveX-rect.width/2+"px";
+        noBtn.style.top=centerY+moveY-rect.height/2+"px";
+    }
+}
+
+// Desktop hover
+window.addEventListener("mousemove",(e)=>{
+    moveNoButton(e.clientX,e.clientY);
 });
+
+// Mobile touch
+window.addEventListener("touchstart",(e)=>{
+    const touch=e.touches[0];
+    moveNoButton(touch.clientX,touch.clientY);
+});
+
 
 yesBtn.addEventListener("click",function(){
     btnGroup.style.display="none";
@@ -228,12 +252,12 @@ envelope.addEventListener("click",function(){
     envelope.classList.add("open");
     setTimeout(()=>{
         finalMessage.style.display="block";
-    },4000);
+    },3000); // 3 seconds
 });
 
 function showPoppers(){
     celebration.style.display="block";
-    for(let i=0;i<30;i++){
+    for(let i=0;i<35;i++){
         const pop=document.createElement("div");
         pop.classList.add("popper");
         pop.innerHTML="🎉";
