@@ -13,7 +13,7 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    background:#1e4d7a; /* Simple blue before YES */
     font-family:'Libre Baskerville',serif;
     overflow:hidden;
     text-align:center;
@@ -21,21 +21,20 @@ body{
     padding:20px;
 }
 
-/* Floating Hearts */
+/* Blue Hearts (activated after YES) */
 .heart{
     position:fixed;
     color:#4fc3f7;
-    font-size:18px;
-    animation:float 12s linear infinite;
-    opacity:0.7;
+    font-size:20px;
+    animation:float 8s linear infinite;
+    opacity:0.8;
     z-index:0;
 }
 
 @keyframes float{
-    0%{transform:translateY(110vh) scale(0.8);opacity:0}
-    20%{opacity:0.7}
-    50%{transform:translateY(50vh) translateX(25px)}
-    100%{transform:translateY(-10vh) translateX(-25px);opacity:0}
+    0%{transform:translateY(110vh);opacity:0}
+    20%{opacity:0.8}
+    100%{transform:translateY(-10vh);opacity:0}
 }
 
 .container{width:100%;max-width:500px;position:relative;z-index:2}
@@ -58,54 +57,8 @@ button{
     min-width:120px;
 }
 
-#yesBtn{background:#1e4d7a;color:white}
+#yesBtn{background:#163a5a;color:white}
 #noBtn{background:#888;color:white;position:relative}
-
-/* Celebration */
-.celebration{
-    position:fixed;
-    top:0;left:0;
-    width:100%;height:100%;
-    display:none;
-    pointer-events:none;
-    z-index:1;
-}
-
-.firework{
-    position:absolute;
-    font-size:34px;
-    animation:explode 2.5s ease-out forwards;
-}
-
-@keyframes explode{
-    0%{transform:scale(0.2);opacity:0}
-    40%{opacity:1}
-    100%{transform:scale(1.8);opacity:0}
-}
-
-.spark{
-    position:absolute;
-    width:6px;height:6px;
-    background:#4fc3f7;
-    border-radius:50%;
-    animation:sparkle 2s linear forwards;
-}
-
-@keyframes sparkle{
-    0%{transform:translate(0,0);opacity:1}
-    100%{transform:translate(var(--x),var(--y));opacity:0}
-}
-
-.lights{
-    position:fixed;
-    top:0;width:100%;
-    display:none;
-    font-size:24px;
-    animation:blink 0.6s infinite alternate;
-    z-index:1;
-}
-
-@keyframes blink{from{opacity:0.4}to{opacity:1}}
 
 .afterYesMessage{margin-top:25px;font-size:18px;display:none}
 
@@ -113,7 +66,7 @@ button{
     margin-top:25px;
     width:100%;
     height:200px;
-    background:#1e4d7a;
+    background:#163a5a;
     border-radius:8px;
     position:relative;
     cursor:pointer;
@@ -124,16 +77,16 @@ button{
 .flap{
     position:absolute;
     width:100%;height:100%;
-    background:#256aa3;
+    background:#1e4d7a;
     clip-path:polygon(0 0,50% 55%,100% 0);
     transform-origin:top;
-    transition:0.8s cubic-bezier(.68,-0.55,.27,1.55);
+    transition:0.8s ease;
 }
 
 .letter{
     position:absolute;
     bottom:0;left:50%;
-    transform:translateX(-50%) translateY(100%) scale(0.8);
+    transform:translateX(-50%) translateY(100%);
     width:90%;
     background:white;
     color:#0f2027;
@@ -143,13 +96,12 @@ button{
     font-size:17px;
     line-height:1.6;
     opacity:0;
-    transition:all 0.9s cubic-bezier(.68,-0.55,.27,1.55);
+    transition:all 0.8s ease;
 }
 
 .envelope.open .flap{transform:rotateX(180deg)}
-
 .envelope.open .letter{
-    transform:translateX(-50%) translateY(-35%) scale(1);
+    transform:translateX(-50%) translateY(-35%);
     opacity:1;
 }
 
@@ -159,25 +111,10 @@ button{
     display:none;
 }
 
-@media(max-width:600px){
-    h1{font-size:20px}
-    .buttons{gap:25px}
-}
+@media(max-width:600px){h1{font-size:20px}}
 </style>
 </head>
 <body>
-
-<script>
-// Floating hearts
-for(let i=0;i<60;i++){
-    const heart=document.createElement('div');
-    heart.className='heart';
-    heart.innerHTML='💙';
-    heart.style.left=Math.random()*100+'vw';
-    heart.style.animationDuration=(8+Math.random()*6)+'s';
-    document.body.appendChild(heart);
-}
-</script>
 
 <div class="container">
     <h1 id="question">Ritika, will you be my Valentine? 💙</h1>
@@ -208,21 +145,16 @@ for(let i=0;i<60;i++){
     </div>
 </div>
 
-<div class="celebration" id="celebration"></div>
-<div class="lights" id="lights">✨💡✨💡✨💡✨💡✨💡✨</div>
-
 <script>
 const yesBtn=document.getElementById("yesBtn");
 const noBtn=document.getElementById("noBtn");
 const envelope=document.getElementById("envelope");
-const celebration=document.getElementById("celebration");
 const btnGroup=document.getElementById("btnGroup");
 const afterYesMessage=document.getElementById("afterYesMessage");
 const question=document.getElementById("question");
 const finalMessage=document.getElementById("finalMessage");
-const lights=document.getElementById("lights");
 
-// Smooth escape without resizing
+// Smooth escape (same size)
 function moveNoButton(x,y){
     const rect=noBtn.getBoundingClientRect();
     const centerX=rect.left+rect.width/2;
@@ -252,39 +184,32 @@ window.addEventListener("touchmove",e=>{
     moveNoButton(t.clientX,t.clientY);
 },{passive:true});
 
-// Strong celebration with cleanup
+// AFTER YES → start blue hearts loop
 yesBtn.addEventListener("click",function(){
     btnGroup.style.display="none";
     question.style.display="none";
-    lights.style.display="block";
-    celebration.style.display="block";
-    celebration.innerHTML=""; // clear previous effects
 
-    for(let i=0;i<10;i++){
-        const fw=document.createElement("div");
-        fw.className="firework";
-        fw.innerHTML="🎆";
-        fw.style.left=Math.random()*100+"vw";
-        fw.style.top=Math.random()*60+"vh";
-        celebration.appendChild(fw);
-    }
+    startHeartsLoop();
 
-    for(let i=0;i<80;i++){
-        const spark=document.createElement("div");
-        spark.className="spark";
-        spark.style.left=Math.random()*100+"vw";
-        spark.style.top=Math.random()*60+"vh";
-        spark.style.setProperty('--x',(Math.random()*300-150)+"px");
-        spark.style.setProperty('--y',(Math.random()*300-150)+"px");
-        celebration.appendChild(spark);
-    }
-
-    setTimeout(()=>{
-        celebration.style.display="none";
-        afterYesMessage.style.display="block";
-        envelope.style.display="block";
-    },3000);
+    afterYesMessage.style.display="block";
+    envelope.style.display="block";
 });
+
+function startHeartsLoop(){
+    setInterval(()=>{
+        for(let i=0;i<6;i++){
+            const heart=document.createElement('div');
+            heart.className='heart';
+            heart.innerHTML='💙';
+            heart.style.left=Math.random()*100+'vw';
+            document.body.appendChild(heart);
+
+            setTimeout(()=>{
+                heart.remove();
+            },8000);
+        }
+    },1000);
+}
 
 envelope.addEventListener("click",function(){
     envelope.classList.add("open");
