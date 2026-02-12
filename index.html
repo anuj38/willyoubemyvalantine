@@ -43,7 +43,7 @@ button{
     border-radius:30px;
     cursor:pointer;
     position:absolute;
-    transition:0.3s ease;
+    transition:0.2s linear; /* linear movement */
     font-family:'Libre Baskerville',serif;
 }
 
@@ -171,10 +171,6 @@ button{
                 Love is awful. It’s painful. It’s frightening. It makes you doubt yourself…
                 But without it, we’re too safe.
             </p>
-            <br>
-            <p>
-                I don’t know what made you swipe right on me, but I believe nothing happens by accident.
-            </p>
         </div>
     </div>
 </div>
@@ -188,8 +184,9 @@ const envelope=document.getElementById("envelope");
 const celebration=document.getElementById("celebration");
 const btnGroup=document.getElementById("btnGroup");
 const afterYesMessage=document.getElementById("afterYesMessage");
+const question=document.getElementById("question");
 
-// Dramatic NO movement (size stays same)
+// Dramatic NO movement (size remains constant)
 noBtn.addEventListener("mouseover",function(){
     const maxX=window.innerWidth-noBtn.offsetWidth;
     const maxY=window.innerHeight-noBtn.offsetHeight;
@@ -203,6 +200,7 @@ noBtn.addEventListener("mouseover",function(){
 // YES click
 yesBtn.addEventListener("click",function(){
     btnGroup.style.display="none";
+    question.style.display="none"; // remove question line
     showPoppers();
 
     setTimeout(()=>{
